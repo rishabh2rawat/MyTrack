@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "94884207887",
+    "firebase_url": "https://mytrack-bf80a.firebaseio.com",
+    "project_id": "mytrack-bf80a",
+    "storage_bucket": "mytrack-bf80a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:94884207887:android:6446fea2c354b34f",
+        "android_client_info": {
+          "package_name": "com.rishabhrawat.mytrack"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "94884207887-js59hs3s7u6vprm65dchna8hb35aag0f.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.rishabhrawat.mytrack",
+            "certificate_hash": "2027f2f5dcd89c3111e3d1d95aea6e38c76f063b"
+          }
+        },
+        {
+          "client_id": "94884207887-idbaq8bb4c5f598dv4der7ve4isievmr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBaZ2yz6bXuWX7lHpA-HF-hwUMKrRkUZMo"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "94884207887-idbaq8bb4c5f598dv4der7ve4isievmr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

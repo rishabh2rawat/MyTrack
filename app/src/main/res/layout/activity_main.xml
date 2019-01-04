@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity"
+    android:background="#ffffff"
+    android:orientation="vertical"
+    >
+
+    <RelativeLayout
+        android:layout_weight="5"
+        android:layout_centerInParent="true"
+        android:id="@+id/top"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        >
+
+        <ImageView
+            android:id="@+id/app_image"
+            android:layout_width="wrap_content"
+            android:layout_height="120dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="50dp"
+            app:srcCompat="@drawable/splash" />
+        <View
+            android:layout_width="80dp"
+            android:layout_height="1dp"
+            android:background="#E2E2E2"
+            android:layout_below="@+id/app_image"
+            android:layout_centerHorizontal="true"
+            android:id="@+id/lineapp"
+            />
+
+        <TextView
+            android:layout_marginTop="30dp"
+            android:id="@+id/app_tagline"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/lineapp"
+            android:text="Vision Your Track"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.AppCompat"
+            android:textColor="#606060"
+            android:textSize="16dp"
+
+            />
+
+    </RelativeLayout>
+    <ProgressBar
+        android:layout_width="80dp"
+        android:layout_height="60dp"
+        android:layout_gravity="center"
+        android:id="@+id/signprogressbar"
+        android:visibility="invisible"
+        />
+
+    <RelativeLayout
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="#F1F9FF"
+        android:gravity="center"
+        >
+
+        <TextView
+            android:id="@+id/textb1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="28dp"
+            android:text="Sign In With"
+            android:textAlignment="center"
+            android:textSize="16dp"
+            android:textColor="@android:color/black"
+
+            />
+
+        <LinearLayout
+            android:id="@+id/loginbtns"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textb1"
+            android:layout_marginTop="20dp"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+
+            <com.google.android.gms.common.SignInButton
+                android:id="@+id/googlesignupbtn"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingLeft="30dp"
+                android:paddingRight="30dp"
+                >
+
+            </com.google.android.gms.common.SignInButton>
+
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/orline"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/loginbtns"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <View
+                android:layout_width="144dp"
+                android:layout_height="1dp"
+                android:background="#ADDAFE" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/loginbtns"
+                android:layout_margin="14dp"
+                android:text="OR"
+                android:textSize="14dp" />
+
+            <View
+                android:layout_width="144dp"
+                android:layout_height="1dp"
+                android:background="#ADDAFE" />
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/otplogin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/orline"
+            android:layout_marginBottom="20dp"
+            android:layout_marginLeft="26dp"
+            android:layout_marginRight="26dp"
+            android:layout_marginTop="0dp"
+            android:background="#016FAB"
+            android:text="SIGN UP WITH OTP" />
+    </RelativeLayout>
+
+
+
+</LinearLayout>
