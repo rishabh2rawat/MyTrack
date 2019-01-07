@@ -1,16 +1,19 @@
-package com.rishabhrawat.mytrack;
+package com.rishabhrawat.mytrack.Ui;
 
+import android.Manifest;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
+
+import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationListener;
 import android.os.Build;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -28,6 +31,14 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.GeoPoint;
+import com.rishabhrawat.mytrack.Models.UserLocation;
+import com.rishabhrawat.mytrack.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +48,7 @@ public class MaponeActivity extends FragmentActivity implements OnMapReadyCallba
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener {
 
+    private static final String TAG = "MaponeActivity";
     private GoogleMap mMap;
     GoogleApiClient mGoogleApiClient;
     Location mLastLocation;
@@ -45,10 +57,19 @@ public class MaponeActivity extends FragmentActivity implements OnMapReadyCallba
     LocationRequest mLocationRequest;
     List<LatLng> list;
 
+
+    UserLocation mUserLocation;
+    private FusedLocationProviderClient mFusedLocationClient;
+
+    FirebaseFirestore firestore;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mapone);
+
+        firestore=FirebaseFirestore.getInstance();
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             checkLocationPermission();
@@ -60,7 +81,10 @@ public class MaponeActivity extends FragmentActivity implements OnMapReadyCallba
         list = new ArrayList<>();
 
 
+
+
     }
+
 
 
     /**
@@ -75,7 +99,9 @@ public class MaponeActivity extends FragmentActivity implements OnMapReadyCallba
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+        mMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
+
+
 
         //Initialize Google Play Services
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -91,6 +117,8 @@ public class MaponeActivity extends FragmentActivity implements OnMapReadyCallba
 
         }
         mFirstLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+
+
     }
 
     protected synchronized void buildGoogleApiClient() {
@@ -124,6 +152,8 @@ public class MaponeActivity extends FragmentActivity implements OnMapReadyCallba
     @Override
     public void onLocationChanged(Location location) {
 
+        getLastKnownLocation();
+
         mLastLocation = location;
         if (mCurrLocationMarker != null) {
             mCurrLocationMarker.remove();
@@ -131,6 +161,7 @@ public class MaponeActivity extends FragmentActivity implements OnMapReadyCallba
 
         //Place current location marker
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(latLng);
         markerOptions.title("Current Position");
@@ -142,13 +173,12 @@ public class MaponeActivity extends FragmentActivity implements OnMapReadyCallba
 
         //move map camera
         mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-       /* mMap.animateCamera(CameraUpdateFactory.zoomTo(15));*/
+        mMap.animateCamera(CameraUpdateFactory.zoomTo(15));
 
         //stop location updates
        /* if (mGoogleApiClient != null) {
             LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, (com.google.android.gms.location.LocationListener) this);
-        }
-*/
+        }*/
     }
 
 
@@ -244,4 +274,70 @@ public class MaponeActivity extends FragmentActivity implements OnMapReadyCallba
     public void onPointerCaptureChanged(boolean hasCapture) {
 
     }
+
+
+
+
+/*---------------------Geting last location----------------------------*/
+
+    private void getLastKnownLocation() {
+        Log.d(TAG, "getLastKnownLocation: called.");
+
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        mFusedLocationClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<android.location.Location>() {
+            @Override
+            public void onComplete(@NonNull Task<android.location.Location> task) {
+                if (task.isSuccessful()) {
+                    Location location = task.getResult();
+                    GeoPoint geoPoint = new GeoPoint(location.getLatitude(), location.getLongitude());
+                    mUserLocation = new UserLocation();
+                    mUserLocation.setGeo_point(geoPoint);
+                    mUserLocation.setTimestamp(null);
+                    saveUserLocation();
+                }
+            }
+        });
+
+    }
+
+/*-----------------saving last location----------------------------------*/
+    private void saveUserLocation()
+    {
+        if(mUserLocation!=null)
+        {
+            DocumentReference locationreference=firestore.
+                    collection(getString(R.string.collection_user_locations)).
+                    document(FirebaseAuth.getInstance().getUid());
+
+            locationreference.set(mUserLocation).addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    if(task.isSuccessful())
+                    {
+
+                        Toast.makeText(MaponeActivity.this, "updated the location", Toast.LENGTH_SHORT).show();
+                        Log.d(TAG, "saveUserLocation: \ninserted user location into database." +
+                                "\n latitude: " + mUserLocation.getGeo_point().getLatitude() +
+                                "\n longitude: " + mUserLocation.getGeo_point().getLongitude());
+
+
+                    }
+                    else
+                    {
+                        Toast.makeText(MaponeActivity.this, "update failed", Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+            });
+        }
+        else
+        {
+            Toast.makeText(this, "null object is passed", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
 }

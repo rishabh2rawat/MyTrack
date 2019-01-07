@@ -1,4 +1,4 @@
-package com.rishabhrawat.mytrack;
+package com.rishabhrawat.mytrack.Ui;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -24,6 +24,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.rishabhrawat.mytrack.R;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -53,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 if (firebaseAuth.getCurrentUser() != null) {
-                    Intent intent = new Intent(MainActivity.this, MaponeActivity.class);
+                    Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
                     startActivity(intent);
                     /*  info.setText("Sign Up with google");*/
                     finish();
