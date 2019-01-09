@@ -7,6 +7,7 @@ import android.location.Location;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationListener;
+
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -68,7 +69,7 @@ public class MaponeActivity extends FragmentActivity implements OnMapReadyCallba
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mapone);
 
-        firestore=FirebaseFirestore.getInstance();
+        firestore = FirebaseFirestore.getInstance();
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -81,10 +82,7 @@ public class MaponeActivity extends FragmentActivity implements OnMapReadyCallba
         list = new ArrayList<>();
 
 
-
-
     }
-
 
 
     /**
@@ -103,6 +101,7 @@ public class MaponeActivity extends FragmentActivity implements OnMapReadyCallba
 
 
 
+
         //Initialize Google Play Services
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (ContextCompat.checkSelfPermission(this,
@@ -116,8 +115,11 @@ public class MaponeActivity extends FragmentActivity implements OnMapReadyCallba
             mMap.setMyLocationEnabled(true);
 
         }
-        mFirstLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
 
+        mFirstLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
 
     }
 
@@ -128,6 +130,8 @@ public class MaponeActivity extends FragmentActivity implements OnMapReadyCallba
                 .addApi(LocationServices.API)
                 .build();
         mGoogleApiClient.connect();
+
+
     }
 
     @Override
@@ -317,8 +321,6 @@ public class MaponeActivity extends FragmentActivity implements OnMapReadyCallba
                 public void onComplete(@NonNull Task<Void> task) {
                     if(task.isSuccessful())
                     {
-
-                        Toast.makeText(MaponeActivity.this, "updated the location", Toast.LENGTH_SHORT).show();
                         Log.d(TAG, "saveUserLocation: \ninserted user location into database." +
                                 "\n latitude: " + mUserLocation.getGeo_point().getLatitude() +
                                 "\n longitude: " + mUserLocation.getGeo_point().getLongitude());

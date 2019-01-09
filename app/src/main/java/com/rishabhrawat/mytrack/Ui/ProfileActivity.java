@@ -5,30 +5,39 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.rishabhrawat.mytrack.Models.User;
 import com.rishabhrawat.mytrack.R;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ProfileActivity extends AppCompatActivity {
 
+    private static final String TAG = "ProfileActivity";
+
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
     CircleImageView profileImage;
     TextView pname;
     TextView email;
-    String name,pemail,uid,phoneNo;
+    String sname,semail,suid,sphoneNo;
     Uri photoUrl;
-
-
+    FirebaseFirestore firestore;
+    User mUserData;
     Button startbtn;
 
     @Override
@@ -41,12 +50,15 @@ public class ProfileActivity extends AppCompatActivity {
         pname=(TextView)findViewById(R.id.profile_name);
         email=(TextView)findViewById(R.id.email);
         profileImage=(CircleImageView)findViewById(R.id.circular_profileimg);
+        firestore = FirebaseFirestore.getInstance();
 
 
         /*...........start button event........*/
         startbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                saveUserData();
                 Intent intent=new Intent(ProfileActivity.this,MaponeActivity.class);
                 startActivity(intent);
             }
@@ -70,14 +82,21 @@ public class ProfileActivity extends AppCompatActivity {
         };
 
 
+        /*======setting user data--------*/
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
             // Name, email address, and profile photo Url
-            name = user.getDisplayName();
-            pemail = user.getEmail();
+            sname = user.getDisplayName();
+            semail = user.getEmail();
             photoUrl = user.getPhotoUrl();
-             uid = user.getUid();
-            phoneNo=user.getPhoneNumber();
+             suid = user.getUid();
+            sphoneNo=user.getPhoneNumber();
+
+            mUserData=new User();
+            mUserData.setPname(sname);
+            mUserData.setPemail(semail);
+            mUserData.setPhoneno(sphoneNo);
+            mUserData.setLastLogin(null);
 
             }
 
@@ -85,8 +104,10 @@ public class ProfileActivity extends AppCompatActivity {
             /*-------filling up the user information ------*/
 
         Glide.with(this.getBaseContext()).load(photoUrl).into(profileImage);
-        pname.setText(name);
-        email.setText(pemail);
+        pname.setText(sname);
+        email.setText(semail);
+
+
 
 
     }
@@ -118,5 +139,34 @@ public class ProfileActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         mAuth.addAuthStateListener(mAuthListener);
+    }
+
+
+
+
+    /*---------Saveing user data..--------------------*/
+
+    public void saveUserData()
+    {
+        DocumentReference userreference=firestore.
+                collection(getString(R.string.collection_users)).
+                document(FirebaseAuth.getInstance().getUid());
+
+        userreference.set(mUserData).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if(task.isSuccessful())
+                {
+                    Log.d(TAG, "onComplete: user data saved");
+
+
+                }
+                else
+                {
+                    Toast.makeText(ProfileActivity.this, "Save Data failed", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+        });
     }
 }

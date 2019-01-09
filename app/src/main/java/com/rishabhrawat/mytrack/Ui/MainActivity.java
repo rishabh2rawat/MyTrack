@@ -24,6 +24,9 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.rishabhrawat.mytrack.Models.User;
 import com.rishabhrawat.mytrack.R;
 
 public class MainActivity extends AppCompatActivity {
@@ -40,6 +43,8 @@ public class MainActivity extends AppCompatActivity {
     private ProgressBar mProgressbar;
 
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
         /*mapping element*/
         gbtn = findViewById(R.id.googlesignupbtn);
         mProgressbar= findViewById(R.id.signprogressbar);
+
 
         mAuth = FirebaseAuth.getInstance();
         mAuthListner = new FirebaseAuth.AuthStateListener() {
@@ -158,6 +164,8 @@ public class MainActivity extends AppCompatActivity {
                 });
 
     }
+
+
 
 
 }
