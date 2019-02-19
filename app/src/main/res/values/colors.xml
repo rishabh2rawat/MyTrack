@@ -9,4 +9,16 @@
     <color name="grey">#bdbdbd</color>
     <color name="white">#ffffff</color>
     <color name="black">#000000</color>
+
+
+
+
+    <integer-array name="fab_menu_item_colors">
+        <!-- A dark Holo shade of red -->
+        <item>@android:color/holo_red_dark</item>
+        <!-- A Holo shade of purple -->
+        <item>@android:color/holo_purple</item>
+        <!-- A light Holo shade of green -->
+        <item>@android:color/holo_green_light</item>
+    </integer-array>
 </resources>

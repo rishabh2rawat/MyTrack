@@ -4,21 +4,24 @@ import com.google.firebase.firestore.ServerTimestamp;
 
 import java.util.Date;
 
+
 public class User {
     private String Pname;
     private String Pemail;
     private String Phoneno;
-    private @ServerTimestamp Date lastLogin;
+    private @ServerTimestamp
+    Date lastLogin;
+    private String Authid;
 
+    public User() {
+    }
 
-    public User(String pname, String pemail, String phoneno, Date lastLogin) {
+    public User(String pname, String pemail, String phoneno, Date lastLogin, String authid) {
         Pname = pname;
         Pemail = pemail;
         Phoneno = phoneno;
         this.lastLogin = lastLogin;
-    }
-
-    public User() {
+        Authid = authid;
     }
 
     public String getPname() {
@@ -29,7 +32,7 @@ public class User {
         Pname = pname;
     }
 
-    public String getPemail(String emailpp) {
+    public String getPemail() {
         return Pemail;
     }
 
@@ -53,6 +56,14 @@ public class User {
         this.lastLogin = lastLogin;
     }
 
+    public String getAuthid() {
+        return Authid;
+    }
+
+    public void setAuthid(String authid) {
+        Authid = authid;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -60,6 +71,7 @@ public class User {
                 ", Pemail='" + Pemail + '\'' +
                 ", Phoneno='" + Phoneno + '\'' +
                 ", lastLogin=" + lastLogin +
+                ", Authid='" + Authid + '\'' +
                 '}';
     }
 }

@@ -8,6 +8,50 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:94884207887:android:a23d2deef39cf7bb",
+        "android_client_info": {
+          "package_name": "com.rishabhrawat.adminmytrack"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "94884207887-u4e385romqr5vc1jk9pt6v484k03gi5v.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.rishabhrawat.adminmytrack",
+            "certificate_hash": "2027f2f5dcd89c3111e3d1d95aea6e38c76f063b"
+          }
+        },
+        {
+          "client_id": "94884207887-idbaq8bb4c5f598dv4der7ve4isievmr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBaZ2yz6bXuWX7lHpA-HF-hwUMKrRkUZMo"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "94884207887-idbaq8bb4c5f598dv4der7ve4isievmr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:94884207887:android:6446fea2c354b34f",
         "android_client_info": {
           "package_name": "com.rishabhrawat.mytrack"

@@ -3,7 +3,6 @@
     <string name="title_activity_mapone">Map</string>
 
 
-
     <!-- Firestore Strings -->
     <string name="collection_users">Users</string>
     <string name="collection_chatrooms">Chatrooms</string>

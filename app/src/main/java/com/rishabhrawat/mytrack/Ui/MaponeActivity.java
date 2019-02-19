@@ -1,24 +1,25 @@
 package com.rishabhrawat.mytrack.Ui;
 
 import android.Manifest;
+import android.app.ActivityManager;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
-
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationListener;
-
 import android.os.Build;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
-import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdate;
@@ -36,13 +37,22 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
+import com.rishabhrawat.mytrack.Models.Locationhisory;
 import com.rishabhrawat.mytrack.Models.UserLocation;
 import com.rishabhrawat.mytrack.R;
+import com.rishabhrawat.mytrack.Services.LocationService;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+
+import io.github.yavski.fabspeeddial.FabSpeedDial;
+import io.github.yavski.fabspeeddial.SimpleMenuListenerAdapter;
 
 public class MaponeActivity extends FragmentActivity implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
@@ -64,6 +74,9 @@ public class MaponeActivity extends FragmentActivity implements OnMapReadyCallba
 
     FirebaseFirestore firestore;
 
+    String date = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date());
+    String dateTime = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date());
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,6 +93,34 @@ public class MaponeActivity extends FragmentActivity implements OnMapReadyCallba
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         list = new ArrayList<>();
+
+        /*------------------------------------floating action menu---------------------------------------------------*/
+
+        FabSpeedDial fabSpeedDial = (FabSpeedDial) findViewById(R.id.fab_speed_dial);
+        fabSpeedDial.setMenuListener(new SimpleMenuListenerAdapter() {
+            @Override
+            public boolean onMenuItemSelected(MenuItem menuItem) {
+                //TODO: Start some activity
+
+                switch (menuItem.getTitle().toString()) {
+                    case "Notify" :
+                        Toast.makeText(MaponeActivity.this, "menuItem Selected  " + menuItem.getTitle(), Toast.LENGTH_SHORT).show();
+                        break;
+
+                    case "Add Visit":
+                        Intent intent=new Intent(MaponeActivity.this,AddVisitActivity.class);
+
+                        startActivity(intent);
+                        break;
+
+                    case "Stop Your Day":
+                        Toast.makeText(MaponeActivity.this, "menuItem Selected  " + menuItem.getTitle(), Toast.LENGTH_SHORT).show();
+                        break;
+
+                }
+                return false;
+            }
+        });
 
 
     }
@@ -98,8 +139,6 @@ public class MaponeActivity extends FragmentActivity implements OnMapReadyCallba
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         mMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
-
-
 
 
         //Initialize Google Play Services
@@ -121,6 +160,7 @@ public class MaponeActivity extends FragmentActivity implements OnMapReadyCallba
 
         mFirstLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
 
+        startLocationService();
     }
 
     protected synchronized void buildGoogleApiClient() {
@@ -140,7 +180,7 @@ public class MaponeActivity extends FragmentActivity implements OnMapReadyCallba
         mLocationRequest = new LocationRequest();
         mLocationRequest.setInterval(1000);
         mLocationRequest.setFastestInterval(1000);
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         if (ContextCompat.checkSelfPermission(this,
                 android.Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED)
@@ -257,6 +297,7 @@ public class MaponeActivity extends FragmentActivity implements OnMapReadyCallba
             // You can add here other case statements according to your requirement.
         }
     }
+
     public void drawPolyLineOnMap(List<LatLng> list) {
         PolylineOptions polyOptions = new PolylineOptions();
         polyOptions.color(Color.BLUE);
@@ -282,7 +323,7 @@ public class MaponeActivity extends FragmentActivity implements OnMapReadyCallba
 
 
 
-/*---------------------Geting last location----------------------------*/
+    /*---------------------Geting last location----------------------------*/
 
     private void getLastKnownLocation() {
         Log.d(TAG, "getLastKnownLocation: called.");
@@ -300,6 +341,7 @@ public class MaponeActivity extends FragmentActivity implements OnMapReadyCallba
                     mUserLocation = new UserLocation();
                     mUserLocation.setGeo_point(geoPoint);
                     mUserLocation.setTimestamp(null);
+                    mUserLocation.setName(FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
                     saveUserLocation();
                 }
             }
@@ -307,37 +349,129 @@ public class MaponeActivity extends FragmentActivity implements OnMapReadyCallba
 
     }
 
-/*-----------------saving last location----------------------------------*/
-    private void saveUserLocation()
-    {
-        if(mUserLocation!=null)
-        {
-            DocumentReference locationreference=firestore.
+    /*-----------------saving last location----------------------------------*/
+    private void saveUserLocation() {
+        if (mUserLocation != null) {
+
+
+            DocumentReference locationreference = firestore.
                     collection(getString(R.string.collection_user_locations)).
                     document(FirebaseAuth.getInstance().getUid());
 
             locationreference.set(mUserLocation).addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
-                    if(task.isSuccessful())
-                    {
+                    if (task.isSuccessful()) {
                         Log.d(TAG, "saveUserLocation: \ninserted user location into database." +
                                 "\n latitude: " + mUserLocation.getGeo_point().getLatitude() +
                                 "\n longitude: " + mUserLocation.getGeo_point().getLongitude());
 
+                        saveLocationHistory(mUserLocation);
 
-                    }
-                    else
-                    {
+                    } else {
                         Toast.makeText(MaponeActivity.this, "update failed", Toast.LENGTH_SHORT).show();
                     }
                 }
-
             });
-        }
-        else
-        {
+        } else {
             Toast.makeText(this, "null object is passed", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void startLocationService() {
+        if (!isLocationServiceRunning()) {
+            Intent serviceIntent = new Intent(this, LocationService.class);
+//        this.startService(serviceIntent);
+
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+
+                MaponeActivity.this.startForegroundService(serviceIntent);
+            } else {
+                startService(serviceIntent);
+            }
+        }
+    }
+
+    private boolean isLocationServiceRunning() {
+        ActivityManager manager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if ("com.codingwithmitch.googledirectionstest.services.LocationService".equals(service.service.getClassName())) {
+                Log.d(TAG, "isLocationServiceRunning: location service is already running.");
+                return true;
+            }
+        }
+        Log.d(TAG, "isLocationServiceRunning: location service is not running.");
+        return false;
+    }
+
+
+    private void saveLocationHistory(final UserLocation userLocation) {
+
+        try {
+
+
+            final DocumentReference listreference = FirebaseFirestore.getInstance().
+                    collection("Location History").document(FirebaseAuth.getInstance().getUid()).collection(date).document(dateTime);
+
+
+            listreference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if (!task.getResult().exists()) {
+                        listreference.set(new Locationhisory("10", "10")).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()) {
+                                    Log.d(TAG, "onComplete: sdfsd");
+                                } else {
+
+                                }
+                            }
+                        });
+
+                    }
+
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        String a = document.getString("lat");
+                        String b = document.getString("lon");
+
+                        String la = String.valueOf(userLocation.getGeo_point().getLatitude());
+                        String lo = String.valueOf(userLocation.getGeo_point().getLongitude());
+
+                        a = a + "," + la;
+                        b = b + "," + lo;
+                        final Locationhisory locationhisory = new Locationhisory();
+
+                        locationhisory.setLat(a);
+                        locationhisory.setLon(b);
+
+                        String pp = locationhisory.getLat();
+                        String ppp = locationhisory.getLon();
+
+
+                        if (locationhisory != null) {
+
+                            listreference.set(locationhisory).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isSuccessful()) {
+                                        Log.d(TAG, "onComplete: sdfsd");
+                                    } else {
+
+                                    }
+                                }
+                            });
+
+                        }
+
+                    }
+                }
+            });
+
+        } catch (NullPointerException e) {
+            Log.d(TAG, "saveLocationHistory: e");
+
         }
     }
 

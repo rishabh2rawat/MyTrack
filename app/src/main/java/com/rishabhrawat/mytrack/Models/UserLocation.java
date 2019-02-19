@@ -9,14 +9,17 @@ public class UserLocation {
 
     private GeoPoint geo_point;
     private @ServerTimestamp Date timestamp;
-
-    public UserLocation(GeoPoint geo_point, Date timestamp) {
-        this.geo_point = geo_point;
-        this.timestamp = timestamp;
-    }
+    private String name;
 
     public UserLocation() {
     }
+
+    public UserLocation(GeoPoint geo_point, Date timestamp, String name) {
+        this.geo_point = geo_point;
+        this.timestamp = timestamp;
+        this.name = name;
+    }
+
 
     public GeoPoint getGeo_point() {
         return geo_point;
@@ -34,11 +37,13 @@ public class UserLocation {
         this.timestamp = timestamp;
     }
 
-    @Override
-    public String toString() {
-        return "UserLocation{" +
-                "geo_point=" + geo_point +
-                ", timestamp=" + timestamp +
-                '}';
+    public String getName() {
+        return name;
     }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+
 }

@@ -20,6 +20,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.rishabhrawat.mytrack.Models.Locationhisory;
 import com.rishabhrawat.mytrack.Models.User;
 import com.rishabhrawat.mytrack.R;
 
@@ -78,6 +79,7 @@ public class ProfileActivity extends AppCompatActivity {
                     startActivity(new Intent(ProfileActivity.this, MainActivity.class));
                     finish();
                 }
+
             }
         };
 
@@ -97,6 +99,8 @@ public class ProfileActivity extends AppCompatActivity {
             mUserData.setPemail(semail);
             mUserData.setPhoneno(sphoneNo);
             mUserData.setLastLogin(null);
+            mUserData.setAuthid(suid);
+
 
             }
 
@@ -148,25 +152,19 @@ public class ProfileActivity extends AppCompatActivity {
 
     public void saveUserData()
     {
-        DocumentReference userreference=firestore.
-                collection(getString(R.string.collection_users)).
-                document(FirebaseAuth.getInstance().getUid());
 
-        userreference.set(mUserData).addOnCompleteListener(new OnCompleteListener<Void>() {
+        DocumentReference userReference=FirebaseFirestore.getInstance().
+                collection("Users").document(FirebaseAuth.getInstance().getUid());
+        
+        userReference.set(mUserData).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-                if(task.isSuccessful())
+                if (task.isComplete())
                 {
-                    Log.d(TAG, "onComplete: user data saved");
-
-
-                }
-                else
-                {
-                    Toast.makeText(ProfileActivity.this, "Save Data failed", Toast.LENGTH_SHORT).show();
+                    Log.d(TAG, "onComplete: ");
                 }
             }
-
         });
+
     }
 }

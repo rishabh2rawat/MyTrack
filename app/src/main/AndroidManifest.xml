@@ -28,9 +28,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Ui.MainActivity"
-
-            />
+        <activity android:name=".Ui.MainActivity" />
         <activity android:name=".DemoActivity" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
@@ -47,7 +45,13 @@
         <activity
             android:name=".Ui.MaponeActivity"
             android:label="@string/title_activity_mapone" />
-        <activity android:name=".Ui.ProfileActivity"></activity>
+        <activity android:name=".Ui.ProfileActivity" />
+
+        <service
+            android:name=".Services.LocationService"
+            android:stopWithTask="true"></service>
+
+        <activity android:name=".Ui.AddVisitActivity"></activity>
     </application>
 
 </manifest>
