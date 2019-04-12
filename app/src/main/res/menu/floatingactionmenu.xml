@@ -10,9 +10,5 @@
         android:id="@+id/action_text"
         android:icon="@drawable/ic_add_black_24dp"
         android:title="Add Visit"/>
-    <item
-        android:id="@+id/action_email"
-        android:icon="@drawable/ic_notifications_active_black_24dp"
-        android:title="Notify"/>
 
 </menu>

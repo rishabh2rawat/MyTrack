@@ -105,10 +105,6 @@ public class MaponeActivity extends FragmentActivity implements OnMapReadyCallba
                 //TODO: Start some activity
 
                 switch (menuItem.getTitle().toString()) {
-                    case "Notify" :
-                        Toast.makeText(MaponeActivity.this, "menuItem Selected  " + menuItem.getTitle(), Toast.LENGTH_SHORT).show();
-                        break;
-
                     case "Add Visit":
                         Intent intent=new Intent(MaponeActivity.this,AddVisitActivity.class);
                         String la=String.valueOf(mUserLocation.getGeo_point().getLatitude());

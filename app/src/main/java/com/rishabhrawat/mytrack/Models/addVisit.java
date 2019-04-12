@@ -11,19 +11,21 @@ public class addVisit {
     private String Person_Intracted;
     private String Remark;
     private String Status;
+    private String Email;
     private @ServerTimestamp Date DateofVisit;
     private GeoPoint geopoint;
     private String visited_by;
 
-    public addVisit(){
-        }
+    public addVisit() {
+    }
 
-    public addVisit(String client_name, String client_contactno, String person_Intracted, String remark, String status, Date dateofVisit, GeoPoint geopoint, String visited_by) {
+    public addVisit(String client_name, String client_contactno, String person_Intracted, String remark, String status, String email, Date dateofVisit, GeoPoint geopoint, String visited_by) {
         Client_name = client_name;
         Client_contactno = client_contactno;
         Person_Intracted = person_Intracted;
         Remark = remark;
         Status = status;
+        Email = email;
         DateofVisit = dateofVisit;
         this.geopoint = geopoint;
         this.visited_by = visited_by;
@@ -69,6 +71,14 @@ public class addVisit {
         Status = status;
     }
 
+    public String getEmail() {
+        return Email;
+    }
+
+    public void setEmail(String email) {
+        Email = email;
+    }
+
     public Date getDateofVisit() {
         return DateofVisit;
     }
@@ -101,6 +111,7 @@ public class addVisit {
                 ", Person_Intracted='" + Person_Intracted + '\'' +
                 ", Remark='" + Remark + '\'' +
                 ", Status='" + Status + '\'' +
+                ", Email='" + Email + '\'' +
                 ", DateofVisit=" + DateofVisit +
                 ", geopoint=" + geopoint +
                 ", visited_by='" + visited_by + '\'' +

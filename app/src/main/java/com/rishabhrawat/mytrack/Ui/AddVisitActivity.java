@@ -41,12 +41,15 @@ public class AddVisitActivity extends AppCompatActivity {
     String PersonIntracted;
     String Remark;
     String Status;
+    String Email;
     addVisit addVisit;
+
     String la,lo;
     ProgressBar progressBar;
 
 
-    EditText name, contactno, intractedperson, remark, status;
+
+    EditText name, contactno, intractedperson,client_email, remark, status;
 
     Button savevisit;
 
@@ -66,6 +69,7 @@ public class AddVisitActivity extends AppCompatActivity {
         status = (EditText) findViewById(R.id.status);
         savevisit = (Button) findViewById(R.id.savevisit_btn);
         progressBar=(ProgressBar)findViewById(R.id.pogressbarp);
+        client_email=(EditText)findViewById(R.id.client_email);
 
         addVisit = new addVisit();
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
@@ -93,9 +97,10 @@ public class AddVisitActivity extends AppCompatActivity {
                 Ccontactno = contactno.getText().toString().trim();
                 Remark = remark.getText().toString().trim();
                 Status = status.getText().toString().trim();
+                Email=client_email.getText().toString().trim();
 
 
-                if(Cname.isEmpty() || PersonIntracted.isEmpty() || Ccontactno.isEmpty() || Remark.isEmpty()  || Status.isEmpty()) {
+                if(Cname.isEmpty() || PersonIntracted.isEmpty() || Ccontactno.isEmpty() || Email.isEmpty()|| Remark.isEmpty()  || Status.isEmpty()) {
                     /*-----setting the add visit-----*/
                     Toast.makeText(AddVisitActivity.this, "Enter all the details", Toast.LENGTH_SHORT).show();
 
@@ -109,6 +114,7 @@ public class AddVisitActivity extends AppCompatActivity {
                     addVisit.setDateofVisit(null);
                     addVisit.setRemark(Remark);
                     addVisit.setStatus(Status);
+                    addVisit.setEmail(Email);
                     double latitude = Double.parseDouble(la);
                     double longitude = Double.parseDouble(lo);
                     GeoPoint geoPoint = new GeoPoint(latitude,longitude);
@@ -149,6 +155,7 @@ public class AddVisitActivity extends AppCompatActivity {
                             contactno.setText("");
                             remark.setText("");
                             status.setText("");
+                            client_email.setText("");
                             progressBar.setVisibility(View.INVISIBLE);
                             finish();
                         }
@@ -171,3 +178,4 @@ public class AddVisitActivity extends AppCompatActivity {
         }
     }
 }
+

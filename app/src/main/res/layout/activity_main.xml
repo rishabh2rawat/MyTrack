@@ -121,7 +121,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/loginbtns"
                 android:layout_margin="14dp"
-                android:text="OR"
+                android:text="AND"
                 android:textSize="14dp" />
 
             <View
@@ -141,7 +141,7 @@
             android:layout_marginRight="26dp"
             android:layout_marginTop="0dp"
             android:background="#016FAB"
-            android:text="SIGN UP WITH OTP" />
+            android:text="Work with MyTrack" />
     </RelativeLayout>
 
 

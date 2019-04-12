@@ -53,6 +53,20 @@
             android:id="@+id/contact_no"
             android:inputType="phone"
             />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Clients Email"
+            android:textStyle="bold"
+            android:layout_marginTop="10dp"
+            />
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/client_email"
+            android:inputType="textEmailAddress"
+            />
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -64,7 +78,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/remarks"
-            android:lines="4"
+            android:inputType="text"
+
             />
 
         <TextView
