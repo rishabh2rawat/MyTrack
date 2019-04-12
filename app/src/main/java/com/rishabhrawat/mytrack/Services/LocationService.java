@@ -45,8 +45,8 @@ public class LocationService extends Service {
     private static final String TAG = "LocationService";
 
     private FusedLocationProviderClient mFusedLocationClient;
-    private final static long UPDATE_INTERVAL = 4 * 1000;  /* 4 secs */
-    private final static long FASTEST_INTERVAL = 2000; /* 2 sec */
+    private final static long UPDATE_INTERVAL = 60 * 1000;  /* 1 min */
+    private final static long FASTEST_INTERVAL = 30000;  /* 30 sec */
     String lat;
     String lon;
     int check=1;
@@ -163,7 +163,7 @@ public class LocationService extends Service {
 
 
             final DocumentReference listreference = FirebaseFirestore.getInstance().
-                    collection("Location History").document(FirebaseAuth.getInstance().getUid()).collection(date).document(dateTime);
+                    collection("Location History").document(FirebaseAuth.getInstance().getUid()).collection(date).document(date);//change the date and time to date
 
 
             listreference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {

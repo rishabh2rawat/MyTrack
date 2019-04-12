@@ -2,6 +2,7 @@ package com.rishabhrawat.mytrack.Ui;
 
 import android.Manifest;
 import android.app.ActivityManager;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -12,6 +13,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -109,12 +111,28 @@ public class MaponeActivity extends FragmentActivity implements OnMapReadyCallba
 
                     case "Add Visit":
                         Intent intent=new Intent(MaponeActivity.this,AddVisitActivity.class);
+                        String la=String.valueOf(mUserLocation.getGeo_point().getLatitude());
+                        String lo=String.valueOf(mUserLocation.getGeo_point().getLongitude());
+                        intent.putExtra("la",la);
+                        intent.putExtra("lo",lo);
 
                         startActivity(intent);
                         break;
 
                     case "Stop Your Day":
-                        Toast.makeText(MaponeActivity.this, "menuItem Selected  " + menuItem.getTitle(), Toast.LENGTH_SHORT).show();
+
+                        AlertDialog.Builder dlgAlert  = new AlertDialog.Builder(MaponeActivity.this);
+                        dlgAlert.setMessage("Do you want to end your Day");
+                        dlgAlert.setTitle("Confirmation");
+                        dlgAlert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                finish();
+                            }
+                        });
+                        dlgAlert.setCancelable(true);
+
+                        dlgAlert.create().show();
                         break;
 
                 }
@@ -411,7 +429,7 @@ public class MaponeActivity extends FragmentActivity implements OnMapReadyCallba
 
 
             final DocumentReference listreference = FirebaseFirestore.getInstance().
-                    collection("Location History").document(FirebaseAuth.getInstance().getUid()).collection(date).document(dateTime);
+                    collection("Location History").document(FirebaseAuth.getInstance().getUid()).collection(date).document(date); //////////changing datetime to date
 
 
             listreference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -473,6 +491,25 @@ public class MaponeActivity extends FragmentActivity implements OnMapReadyCallba
             Log.d(TAG, "saveLocationHistory: e");
 
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+
+        AlertDialog.Builder dlgAlert  = new AlertDialog.Builder(MaponeActivity.this);
+        dlgAlert.setMessage("Do you want to end your Day");
+        dlgAlert.setTitle("Confirmation");
+        dlgAlert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                finish();
+            }
+        });
+        dlgAlert.setCancelable(true);
+
+        dlgAlert.create().show();
+
+
     }
 
 

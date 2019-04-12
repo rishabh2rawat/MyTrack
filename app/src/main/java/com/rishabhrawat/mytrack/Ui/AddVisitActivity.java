@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -41,6 +42,8 @@ public class AddVisitActivity extends AppCompatActivity {
     String Remark;
     String Status;
     addVisit addVisit;
+    String la,lo;
+    ProgressBar progressBar;
 
 
     EditText name, contactno, intractedperson, remark, status;
@@ -62,8 +65,19 @@ public class AddVisitActivity extends AppCompatActivity {
         remark = (EditText) findViewById(R.id.remarks);
         status = (EditText) findViewById(R.id.status);
         savevisit = (Button) findViewById(R.id.savevisit_btn);
+        progressBar=(ProgressBar)findViewById(R.id.pogressbarp);
+
         addVisit = new addVisit();
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+
+        /*.....intent data.....*/
+
+        la=getIntent().getStringExtra("la");
+        lo=getIntent().getStringExtra("lo");
+
+
+
+
 
 
 
@@ -72,6 +86,8 @@ public class AddVisitActivity extends AppCompatActivity {
         savevisit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                progressBar.setVisibility(View.VISIBLE);
                 Cname = name.getText().toString().trim();
                 PersonIntracted = intractedperson.getText().toString().trim();
                 Ccontactno = contactno.getText().toString().trim();
@@ -93,26 +109,9 @@ public class AddVisitActivity extends AppCompatActivity {
                     addVisit.setDateofVisit(null);
                     addVisit.setRemark(Remark);
                     addVisit.setStatus(Status);
-                    getLastKnownLocation();
-                }
-            }
-        });
-
-    }
-
-    private void getLastKnownLocation() {
-        Log.d(TAG, "getLastKnownLocation: called.");
-
-
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            return;
-        }
-        mFusedLocationClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
-            @Override
-            public void onComplete(@NonNull Task<Location> task) {
-                if (task.isSuccessful()) {
-                    Location location = task.getResult();
-                    GeoPoint geoPoint = new GeoPoint(location.getLatitude(), location.getLongitude());
+                    double latitude = Double.parseDouble(la);
+                    double longitude = Double.parseDouble(lo);
+                    GeoPoint geoPoint = new GeoPoint(latitude,longitude);
                     addVisit.setGeopoint(geoPoint);
                     savevisit();
                 }
@@ -150,6 +149,8 @@ public class AddVisitActivity extends AppCompatActivity {
                             contactno.setText("");
                             remark.setText("");
                             status.setText("");
+                            progressBar.setVisibility(View.INVISIBLE);
+                            finish();
                         }
                     });
 
